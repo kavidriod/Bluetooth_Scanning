@@ -79,7 +79,7 @@ List<ScannedDevices> scannedDevices;
                     Log.i(TAG," isChecked ? "+isChecked);
 
                     if (isChecked){
-
+                        scannedDevices.clear();
                         getApplicationContext().registerReceiver(scanBroadcastReceiver,intentFilter);
                         Log.i(TAG," bluetoothAdapters.isDiscovering() ? "+bluetoothAdapter.isDiscovering());
                         if (bluetoothAdapter.isDiscovering()){
@@ -154,17 +154,24 @@ List<ScannedDevices> scannedDevices;
                 Log.i(TAG," action "+bluetoothDevice.getAddress());
                 Log.i(TAG," action "+bluetoothDevice.getName());
                 String name = "Unknown",macaddress = "Unknown";
+
                 if (bluetoothDevice.getName() != null)
-                  name = bluetoothDevice.getName();
+                    name = bluetoothDevice.getName();
 
                 if (bluetoothDevice.getAddress() != null)
                     macaddress = bluetoothDevice.getAddress();
 
                 ScannedDevices eachscannedDevices = new ScannedDevices(name,macaddress);
-                scannedDevices.add(eachscannedDevices);
 
-                DeviceListAdapter  deviceListAdapter = new DeviceListAdapter(getApplicationContext(),scannedDevices);
-                listView.setAdapter(deviceListAdapter);
+
+                if (!scannedDevices.contains(eachscannedDevices)){
+                    scannedDevices.add(eachscannedDevices);
+                    DeviceListAdapter  deviceListAdapter = new DeviceListAdapter(getApplicationContext(),scannedDevices);
+                    listView.setAdapter(deviceListAdapter);
+                }
+
+
+
             }else  if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)){
                 Log.i(TAG," ACTION_DISCOVERY_STARTED ?"+intent.getAction());
                 scanToggleButton.setChecked(true);
